@@ -1,0 +1,7 @@
+DEFAULT_SYMBOLS = [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "DOGEUSDT",
+    "BNBUSDT",
+]

@@ -1,0 +1,18 @@
+import requests
+
+from app.config.settings import BINANCE_BASE_URL
+from app.core.logger import logger
+
+
+def fetch_price(symbol: str):
+    logger.info(f"Calling Binance API for {symbol}")
+
+    url = f"{BINANCE_BASE_URL}/ticker/24hr?symbol={symbol}"
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        logger.error(f"Binance returned {response.status_code} for {symbol}")
+        return None
+
+    return response.json()
