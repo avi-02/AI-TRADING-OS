@@ -29,6 +29,7 @@ AI Trading OS is a production-style trading platform backend built with Python a
 ## 📌 Project Roadmap
 
 ### ✅ Milestone 1 – Backend Foundation
+
 - FastAPI Setup
 - REST APIs
 - Repository Pattern
@@ -39,12 +40,14 @@ AI Trading OS is a production-style trading platform backend built with Python a
 - Clean Architecture
 
 ### 🚧 Milestone 2 – Market Intelligence
+
 - Market Data Engine
 - Market Scanner
 - Top Gainers & Losers
 - Market Summary
 
 ### 📈 Milestone 3 – Technical Analysis
+
 - RSI
 - EMA
 - SMA
@@ -52,6 +55,7 @@ AI Trading OS is a production-style trading platform backend built with Python a
 - Bollinger Bands
 
 ### 🤖 Milestone 4 – AI Trading Assistant
+
 - AI Market Analysis
 - News Sentiment Analysis
 - Strategy Builder
