@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 from app.api.market import router as market_router
 from app.api.overview import router as overview_router
+from app.api.scanner import router as scanner_router 
+
 
 app = FastAPI(
     title="AI Trading OS",
@@ -24,3 +26,8 @@ def health():
     return {
         "status": "running"
     }
+
+app.include_router(scanner_router)
+app.include_router(market_router)
+app.include_router(overview_router)
+app.include_router(scanner_router)
