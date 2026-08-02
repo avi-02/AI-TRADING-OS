@@ -59,4 +59,6 @@ def test_market_overview_api(mocker):
 
     assert data["watchlist_size"] == 1
     assert data["highest_price"]["symbol"] == "BTCUSDT"
+    assert data["highest_volume"]["symbol"] == "BTCUSDT"
+    assert data["top_gainer"]["symbol"] == "BTCUSDT"
     assert data["top_loser"] is None
