@@ -1,4 +1,5 @@
 from typing import Optional
+import math
 
 
 def calculate_sma(
@@ -75,5 +76,39 @@ def calculate_ema_from_series(
 
     result: list[Optional[float]] = [None] * first_valid
     result.extend(ema)
+
+    return result 
+
+
+
+
+def calculate_standard_deviation(
+    values: list[float],
+    period: int,
+) -> list[float | None]:
+    """
+    Calculate rolling standard deviation.
+    """
+
+    if len(values) < period:
+        return []
+
+    result: list[float | None] = [None] * (period - 1)
+
+    for index in range(period - 1, len(values)):
+        window = values[
+            index - period + 1 : index + 1
+        ]
+
+        mean = sum(window) / period
+
+        variance = sum(
+            (value - mean) ** 2
+            for value in window
+        ) / period
+
+        result.append(
+            math.sqrt(variance)
+        )
 
     return result

@@ -38,4 +38,15 @@ class MACDValue(BaseModel):
 
     macd: float
     signal: float
-    histogram: float
+    histogram: float 
+
+class BollingerBandValue(BaseModel):
+    """
+    Represents one Bollinger Band data point.
+    """
+
+    timestamp: datetime
+
+    upper_band: float
+    middle_band: float
+    lower_band: float

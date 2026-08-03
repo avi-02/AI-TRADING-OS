@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Query
 
 from app.models.indicator import (
+    BollingerBandValue,
     EMAValue,
     MACDValue,
     RSIValue,
@@ -10,6 +11,7 @@ from app.models.indicator import (
 )
 
 from app.services.indicators import (
+    get_bollinger_bands,
     get_ema,
     get_macd,
     get_rsi,
@@ -184,4 +186,54 @@ def macd(
             detail=f"Unable to calculate MACD for {symbol}",
         )
 
+    return result 
+
+@router.get(
+    "/bollinger/{symbol}",
+    response_model=List[BollingerBandValue],
+)
+def bollinger(
+    symbol: str,
+    interval: str = Query(
+        default="1h",
+        description="Candle interval",
+    ),
+    period: int = Query(
+        default=20,
+        ge=2,
+        le=200,
+        description="Bollinger Band period",
+    ),
+    limit: int = Query(
+        default=100,
+        ge=20,
+        le=1000,
+        description="Number of candles",
+    ),
+    multiplier: float = Query(
+        default=2.0,
+        ge=1.0,
+        le=5.0,
+        description="Standard deviation multiplier",
+    ),
+):
+    """
+    Calculate Bollinger Bands.
+    """
+
+    result = get_bollinger_bands(
+        symbol=symbol.upper(),
+        interval=interval,
+        period=period,
+        limit=limit,
+        multiplier=multiplier,
+    )
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unable to calculate Bollinger Bands for {symbol}",
+        )
+
     return result
+

@@ -4,6 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.models.indicator import (
+    BollingerBandValue,
     EMAValue,
     MACDValue,
     RSIValue,
@@ -84,4 +85,27 @@ def test_macd_api(mocker):
 
     assert data[0]["macd"] == 12.5
     assert data[0]["signal"] == 10.2
-    assert data[0]["histogram"] == 2.3
+    assert data[0]["histogram"] == 2.3 
+
+def test_bollinger_api(mocker):
+    mocker.patch(
+        "app.api.indicator.get_bollinger_bands",
+        return_value=[
+            BollingerBandValue(
+                timestamp=datetime.now(UTC),
+                upper_band=105.0,
+                middle_band=100.0,
+                lower_band=95.0,
+            )
+        ],
+    )
+
+    response = client.get("/indicator/bollinger/BTCUSDT")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data[0]["upper_band"] == 105.0
+    assert data[0]["middle_band"] == 100.0
+    assert data[0]["lower_band"] == 95.0

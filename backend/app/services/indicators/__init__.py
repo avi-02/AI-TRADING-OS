@@ -1,3 +1,4 @@
+from .bollinger import get_bollinger_bands
 from .ema import get_ema
 from .macd import get_macd
 from .rsi import get_rsi
@@ -8,4 +9,5 @@ __all__ = [
     "get_ema",
     "get_rsi",
     "get_macd",
+    "get_bollinger_bands",
 ]
