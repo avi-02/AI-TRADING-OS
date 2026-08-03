@@ -1,6 +1,12 @@
+from datetime import UTC, datetime
+
 from app.core.constants import DEFAULT_SYMBOLS
+from app.models.candle import Candle
 from app.models.market import MarketTicker
-from app.repositories.market_repository import fetch_price
+from app.repositories.market_repository import (
+    fetch_candles,
+    fetch_price,
+)
 
 
 def get_price(symbol: str) -> MarketTicker | None:
@@ -38,3 +44,49 @@ def get_multiple_prices() -> list[MarketTicker]:
             prices.append(market)
 
     return prices
+
+
+def get_candles(
+    symbol: str,
+    interval: str = "1h",
+    limit: int = 100,
+) -> list[Candle] | None:
+    """
+    Fetch and transform historical candle data.
+    """
+
+    data = fetch_candles(
+        symbol=symbol,
+        interval=interval,
+        limit=limit,
+    )
+
+    if data is None:
+        return None
+
+    candles: list[Candle] = []
+
+    for candle in data:
+        candles.append(
+            Candle(
+                open_time=datetime.fromtimestamp(
+                    candle[0] / 1000,
+                    tz=UTC,
+                ),
+                close_time=datetime.fromtimestamp(
+                    candle[6] / 1000,
+                    tz=UTC,
+                ),
+                open_price=float(candle[1]),
+                high_price=float(candle[2]),
+                low_price=float(candle[3]),
+                close_price=float(candle[4]),
+                volume=float(candle[5]),
+                quote_volume=float(candle[7]),
+                trade_count=int(candle[8]),
+                taker_buy_base_volume=float(candle[9]),
+                taker_buy_quote_volume=float(candle[10]),
+            )
+        )
+
+    return candles

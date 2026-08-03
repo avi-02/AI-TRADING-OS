@@ -16,3 +16,33 @@ def fetch_price(symbol: str):
         return None
 
     return response.json()
+
+def fetch_candles(
+    symbol: str,
+    interval: str = "1h",
+    limit: int = 100,
+):
+    """
+    Fetch historical candlestick (OHLCV) data from Binance.
+    """
+
+    url = (
+        f"{BINANCE_BASE_URL}/klines"
+        f"?symbol={symbol}"
+        f"&interval={interval}"
+        f"&limit={limit}"
+    )
+
+    logger.info(
+        f"Fetching {limit} candles for {symbol} ({interval})"
+    )
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        logger.error(
+            f"Failed to fetch candles for {symbol}"
+        )
+        return None
+
+    return response.json()
