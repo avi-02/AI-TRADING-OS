@@ -3,7 +3,12 @@ from datetime import UTC, datetime
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.models.indicator import EMAValue, RSIValue, SMAValue
+from app.models.indicator import (
+    EMAValue,
+    MACDValue,
+    RSIValue,
+    SMAValue,
+)
 
 client = TestClient(app)
 
@@ -57,3 +62,26 @@ def test_rsi_api(mocker):
 
     assert response.status_code == 200
     assert response.json()[0]["value"] == 56.3
+
+def test_macd_api(mocker):
+    mocker.patch(
+        "app.api.indicator.get_macd",
+        return_value=[
+            MACDValue(
+                timestamp=datetime.now(UTC),
+                macd=12.5,
+                signal=10.2,
+                histogram=2.3,
+            )
+        ],
+    )
+
+    response = client.get("/indicator/macd/BTCUSDT")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data[0]["macd"] == 12.5
+    assert data[0]["signal"] == 10.2
+    assert data[0]["histogram"] == 2.3

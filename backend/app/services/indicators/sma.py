@@ -1,4 +1,5 @@
 from app.models.indicator import SMAValue
+from app.services.indicators.calculations import calculate_sma
 from app.services.indicators.utils import load_market_data
 
 
@@ -24,20 +25,24 @@ def get_sma(
     candles = market_data.candles
     closes = market_data.closes
 
-    if len(closes) < period:
+    sma = calculate_sma(
+        closes,
+        period,
+    )
+
+    if not sma:
         return []
 
     sma_values: list[SMAValue] = []
 
-    for index in range(period - 1, len(closes)):
-        window = closes[index - period + 1 : index + 1]
-
-        sma = sum(window) / period
+    for candle, value in zip(candles, sma):
+        if value is None:
+            continue
 
         sma_values.append(
             SMAValue(
-                timestamp=candles[index].close_time,
-                value=round(sma, 4),
+                timestamp=candle.close_time,
+                value=round(value, 4),
             )
         )
 

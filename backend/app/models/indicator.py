@@ -28,3 +28,14 @@ class RSIValue(BaseModel):
 
     timestamp: datetime
     value: float
+
+class MACDValue(BaseModel):
+    """
+    Represents one MACD data point.
+    """
+
+    timestamp: datetime
+
+    macd: float
+    signal: float
+    histogram: float

@@ -1,4 +1,5 @@
 from app.models.indicator import EMAValue
+from app.services.indicators.calculations import calculate_ema
 from app.services.indicators.utils import load_market_data
 
 
@@ -24,28 +25,24 @@ def get_ema(
     candles = market_data.candles
     closes = market_data.closes
 
-    if len(closes) < period:
+    ema = calculate_ema(
+        closes,
+        period,
+    )
+
+    if not ema:
         return []
 
-    multiplier = 2 / (period + 1)
+    ema_values: list[EMAValue] = []
 
-    sma = sum(closes[:period]) / period
-    ema = sma
-
-    ema_values: list[EMAValue] = [
-        EMAValue(
-            timestamp=candles[period - 1].close_time,
-            value=round(ema, 4),
-        )
-    ]
-
-    for index in range(period, len(closes)):
-        ema = ((closes[index] - ema) * multiplier) + ema
+    for candle, value in zip(candles, ema):
+        if value is None:
+            continue
 
         ema_values.append(
             EMAValue(
-                timestamp=candles[index].close_time,
-                value=round(ema, 4),
+                timestamp=candle.close_time,
+                value=round(value, 4),
             )
         )
 

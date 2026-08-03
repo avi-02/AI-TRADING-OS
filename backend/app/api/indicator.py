@@ -2,8 +2,19 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Query
 
-from app.models.indicator import EMAValue, SMAValue,RSIValue
-from app.services.indicators import get_ema, get_sma,get_rsi
+from app.models.indicator import (
+    EMAValue,
+    MACDValue,
+    RSIValue,
+    SMAValue,
+)
+
+from app.services.indicators import (
+    get_ema,
+    get_macd,
+    get_rsi,
+    get_sma,
+)
 
 router = APIRouter(
     prefix="/indicator",
@@ -94,11 +105,12 @@ def ema(
             detail=f"Unable to calculate EMA for {symbol}",
         )
 
-    return result 
+    return result
+
 
 @router.get(
     "/rsi/{symbol}",
-    response_model=list[RSIValue],
+    response_model=List[RSIValue],
 )
 def rsi(
     symbol: str,
@@ -134,6 +146,42 @@ def rsi(
         raise HTTPException(
             status_code=404,
             detail=f"Unable to calculate RSI for {symbol}",
+        )
+
+    return result
+
+
+@router.get(
+    "/macd/{symbol}",
+    response_model=List[MACDValue],
+)
+def macd(
+    symbol: str,
+    interval: str = Query(
+        default="1h",
+        description="Candle interval",
+    ),
+    limit: int = Query(
+        default=100,
+        ge=35,
+        le=1000,
+        description="Number of candles",
+    ),
+):
+    """
+    Calculate the Moving Average Convergence Divergence (MACD).
+    """
+
+    result = get_macd(
+        symbol=symbol.upper(),
+        interval=interval,
+        limit=limit,
+    )
+
+    if result is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Unable to calculate MACD for {symbol}",
         )
 
     return result
