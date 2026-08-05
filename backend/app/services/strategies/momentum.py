@@ -8,6 +8,10 @@ from app.services.indicators import (
     get_rsi,
 )
 
+from app.services.strategies.utils import (
+    evaluate_momentum_signal,
+)
+
 
 def momentum_strategy(
     symbol: str,
@@ -32,54 +36,14 @@ def momentum_strategy(
     latest_rsi = rsi[-1]
     latest_macd = macd[-1]
 
-    reasons: list[str] = []
-
-    # BUY Signal
-    if (
-        latest_rsi.value < 30
-        and latest_macd.histogram > 0
-    ):
-        reasons.append(
-            "RSI indicates oversold conditions."
-        )
-        reasons.append(
-            "MACD histogram is bullish."
-        )
-
-        return StrategyResult(
-            symbol=symbol,
-            signal=Signal.BUY,
-            confidence=80,
-            reasons=reasons,
-        )
-
-    # SELL Signal
-    if (
-        latest_rsi.value > 70
-        and latest_macd.histogram < 0
-    ):
-        reasons.append(
-            "RSI indicates overbought conditions."
-        )
-        reasons.append(
-            "MACD histogram is bearish."
-        )
-
-        return StrategyResult(
-            symbol=symbol,
-            signal=Signal.SELL,
-            confidence=80,
-            reasons=reasons,
-        )
-
-    # HOLD Signal
-    reasons.append(
-        "No strong momentum signal detected."
+    signal, confidence, reasons = evaluate_momentum_signal(
+        latest_rsi.value,
+        latest_macd.histogram,
     )
 
     return StrategyResult(
         symbol=symbol,
-        signal=Signal.HOLD,
-        confidence=50,
+        signal=signal,
+        confidence=confidence,
         reasons=reasons,
     )
