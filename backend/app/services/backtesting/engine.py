@@ -29,7 +29,8 @@ def run_backtest(
         limit=limit,
     )
 
-    if candles is None:
+    # No candle data available
+    if not candles:
         return None
 
     rsi = get_rsi(
@@ -44,7 +45,15 @@ def run_backtest(
         limit=limit,
     )
 
+    # Ensure all indicator data is available
     if not rsi or not macd:
+        return None
+
+    # Ensure all series have matching lengths
+    if (
+        len(candles) != len(rsi)
+        or len(candles) != len(macd)
+    ):
         return None
 
     signals = generate_momentum_signals(
@@ -57,7 +66,7 @@ def run_backtest(
         for candle in candles
     ]
 
-    final_balance, total, wins, losses = simulate_trades(
+    final_balance, total_trades, winning_trades, losing_trades = simulate_trades(
         prices=prices,
         signals=signals,
         initial_balance=initial_balance,
@@ -66,9 +75,9 @@ def run_backtest(
     metrics = calculate_metrics(
         initial_balance=initial_balance,
         final_balance=final_balance,
-        total_trades=total,
-        winning_trades=wins,
-        losing_trades=losses,
+        total_trades=total_trades,
+        winning_trades=winning_trades,
+        losing_trades=losing_trades,
     )
 
     return BacktestResult(
