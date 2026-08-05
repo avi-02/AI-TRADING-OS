@@ -6,6 +6,7 @@ from app.api.scanner import router as scanner_router
 from app.api.indicator import router as indicator_router
 from app.api.strategy import router as strategy_router
 from app.api.backtest import router as backtest_router
+from app.api.paper import router as paper_router
 
 app = FastAPI(
     title="AI Trading OS",
@@ -41,6 +42,7 @@ app.include_router(scanner_router)
 app.include_router(indicator_router)
 app.include_router(strategy_router)
 app.include_router(backtest_router)
+app.include_router(paper_router)
 
 
 @app.get("/")
