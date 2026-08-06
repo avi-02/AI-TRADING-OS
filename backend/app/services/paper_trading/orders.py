@@ -1,6 +1,13 @@
+from datetime import datetime
+
+from app.database import SessionLocal
+from app.database.models.trade import TradeDB
 from app.models.portfolio import (
     OrderResponse,
     Position,
+)
+from app.repositories.trade_repository import (
+    trade_repository,
 )
 from app.services.market_service import get_price
 from app.services.paper_trading.portfolio import (
@@ -10,7 +17,7 @@ from app.services.paper_trading.portfolio import (
 
 class OrderService:
     """
-    Executes paper trading buy and sell orders.
+    Executes paper trading BUY and SELL orders.
     """
 
     def buy(
@@ -19,7 +26,7 @@ class OrderService:
         amount: float,
     ) -> OrderResponse:
         """
-        Execute a paper BUY order.
+        Execute a BUY order.
         """
 
         portfolio = portfolio_service.get_portfolio()
@@ -43,20 +50,22 @@ class OrderService:
         position = portfolio_service.get_position(symbol)
 
         if position is None:
-            portfolio.positions.append(
-                Position(
-                    symbol=symbol,
-                    quantity=quantity,
-                    average_price=current_price,
-                )
+
+            position = Position(
+                symbol=symbol,
+                quantity=quantity,
+                average_price=current_price,
             )
+
         else:
+
             total_quantity = (
                 position.quantity + quantity
             )
 
             total_cost = (
-                position.quantity * position.average_price
+                position.quantity
+                * position.average_price
             ) + amount
 
             position.average_price = (
@@ -65,14 +74,46 @@ class OrderService:
 
             position.quantity = total_quantity
 
-        portfolio.cash -= amount
+        portfolio_service.save_position(position)
+
+        remaining_cash = (
+            portfolio.cash - amount
+        )
+
+        portfolio_service.update_cash(
+            remaining_cash
+        )
+
+        db = SessionLocal()
+
+        try:
+
+            account_id = (
+                portfolio_service.get_account_id()
+            )
+
+            trade_repository.save_trade(
+                db,
+                TradeDB(
+                    account_id=account_id,
+                    symbol=symbol,
+                    side="BUY",
+                    price=current_price,
+                    quantity=quantity,
+                    status="FILLED",
+                    timestamp=datetime.utcnow(),
+                ),
+            )
+
+        finally:
+            db.close()
 
         return OrderResponse(
             symbol=symbol,
             side="BUY",
             price=current_price,
             quantity=quantity,
-            remaining_cash=portfolio.cash,
+            remaining_cash=remaining_cash,
             status="FILLED",
         )
 
@@ -82,12 +123,14 @@ class OrderService:
         quantity: float | None = None,
     ) -> OrderResponse:
         """
-        Execute a paper SELL order.
+        Execute a SELL order.
         """
 
         portfolio = portfolio_service.get_portfolio()
 
-        position = portfolio_service.get_position(symbol)
+        position = portfolio_service.get_position(
+            symbol
+        )
 
         if position is None:
             raise ValueError(
@@ -111,21 +154,62 @@ class OrderService:
                 "Not enough quantity available."
             )
 
-        proceeds = quantity * current_price
+        proceeds = (
+            quantity * current_price
+        )
 
-        portfolio.cash += proceeds
+        remaining_cash = (
+            portfolio.cash + proceeds
+        )
 
         position.quantity -= quantity
 
         if position.quantity <= 0:
-            portfolio.positions.remove(position)
+
+            portfolio_service.remove_position(
+                symbol
+            )
+
+        else:
+
+            portfolio_service.save_position(
+                position
+            )
+
+        portfolio_service.update_cash(
+            remaining_cash
+        )
+
+        db = SessionLocal()
+
+        try:
+
+            account_id = (
+                portfolio_service.get_account_id()
+            )
+
+            trade_repository.save_trade(
+                db,
+                TradeDB(
+                    account_id=account_id,
+                    symbol=symbol,
+                    side="SELL",
+                    price=current_price,
+                    quantity=quantity,
+                    status="FILLED",
+                    timestamp=datetime.utcnow(),
+                ),
+            )
+
+        finally:
+            db.close()
 
         return OrderResponse(
             symbol=symbol,
             side="SELL",
             price=current_price,
             quantity=quantity,
-            remaining_cash=portfolio.cash,
+            remaining_cash=remaining_cash,
             status="FILLED",
         )
 

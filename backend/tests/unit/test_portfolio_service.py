@@ -18,10 +18,13 @@ def test_portfolio_reset():
 
 def test_get_empty_portfolio():
     """
-    Verify a new portfolio starts empty.
+    Verify the portfolio is empty after a reset.
     """
 
     service = PortfolioService()
+
+    # Ensure a known state
+    service.reset(10000)
 
     portfolio = service.get_portfolio()
 
@@ -36,5 +39,8 @@ def test_get_position():
     """
 
     service = PortfolioService()
+
+    # Ensure a known state
+    service.reset(10000)
 
     assert service.get_position("BTCUSDT") is None

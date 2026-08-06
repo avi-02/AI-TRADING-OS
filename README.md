@@ -1,21 +1,19 @@
 # 🚀 AI Trading OS
 
-> A production-ready algorithmic trading backend built with **FastAPI**, featuring technical indicators, strategy evaluation, historical backtesting, and a modular architecture ready for AI-powered trading.
+> An AI-powered algorithmic trading platform built with **FastAPI**, **Python**, and **Binance Market Data**.
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-Latest-009688)
-![Pytest](https://img.shields.io/badge/Tests-30%20Passed-success)
-![License](https://img.shields.io/badge/License-MIT-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green)
+![Tests](https://img.shields.io/badge/Tests-44_Passing-success)
+![License](https://img.shields.io/badge/License-MIT-orange)
 
 ---
 
 # 📌 Overview
 
-AI Trading OS is a modular backend platform for algorithmic trading.
+AI Trading OS is a modular trading platform designed to analyze cryptocurrency markets, generate trading signals, perform historical backtesting, and simulate paper trading.
 
-The system fetches live market data, calculates technical indicators, evaluates trading strategies, performs historical backtesting, and exposes everything through REST APIs.
-
-The architecture has been designed with scalability in mind so future AI models, portfolio management, and paper trading can be integrated without major refactoring.
+The project is built with clean architecture principles, comprehensive automated testing, and CI/CD using GitHub Actions.
 
 ---
 
@@ -23,76 +21,89 @@ The architecture has been designed with scalability in mind so future AI models,
 
 ## 📈 Market Data
 
-- Live Market Prices
-- Historical Candlestick Data
-- Multiple Timeframes
+- Live Binance Market Data
+- Historical Candle Data
+- Market Overview API
+- Crypto Scanner
 
 ---
 
 ## 📊 Technical Indicators
 
-- ✅ Simple Moving Average (SMA)
-- ✅ Exponential Moving Average (EMA)
-- ✅ Relative Strength Index (RSI)
-- ✅ Moving Average Convergence Divergence (MACD)
-- ✅ Bollinger Bands
+- Simple Moving Average (SMA)
+- Exponential Moving Average (EMA)
+- Relative Strength Index (RSI)
+- MACD
+- Bollinger Bands
 
 ---
 
-## 🤖 Trading Strategy
-
-Current Strategy:
+## 🤖 Strategy Engine
 
 - Momentum Strategy
-    - RSI
-    - MACD
-    - Buy/Sell/Hold Signals
+- BUY / SELL / HOLD Signals
+- Confidence Score
+- Strategy Reasoning
 
 ---
 
 ## 📉 Backtesting Engine
 
 - Historical Simulation
-- Trade Execution
-- Profit Calculation
+- Portfolio Growth
 - Win Rate
+- Profit %
 - Trade Statistics
 
-Example:
+---
 
-```json
-{
-    "symbol": "BTCUSDT",
-    "strategy": "Momentum",
-    "profit_percent": 0.11,
-    "win_rate": 50
-}
-```
+## 💰 Paper Trading
+
+- Portfolio Management
+- Paper BUY Orders
+- Paper SELL Orders
+- Live Portfolio P&L
+- Automatic Strategy Execution
+
+---
+
+## 🌐 REST APIs
+
+- Market APIs
+- Indicator APIs
+- Scanner APIs
+- Strategy APIs
+- Backtesting APIs
+- Paper Trading APIs
+
+---
+
+## 🧪 Testing
+
+- 44 Automated Tests
+- Unit Tests
+- Integration Tests
+- GitHub Actions CI
 
 ---
 
 # 🏗 Architecture
 
 ```
-                    Binance API
-                         │
-                         ▼
-                  Repository Layer
-                         │
-                         ▼
-                  Service Layer
-      ┌──────────┬───────────┬───────────┐
-      ▼          ▼           ▼
- Indicators   Scanner    Strategies
-      │
-      ▼
- Backtesting Engine
-      │
-      ▼
-     FastAPI
-      │
-      ▼
- REST API + Swagger
+                        AI Trading OS
+
+                           FastAPI
+                              │
+      ┌───────────────────────┼────────────────────────┐
+      │                       │                        │
+      ▼                       ▼                        ▼
+ Market APIs          Strategy APIs          Paper Trading APIs
+      │                       │                        │
+      ▼                       ▼                        ▼
+ Market Service      Momentum Strategy        Portfolio Service
+      │                       │                        │
+      ▼                       ▼                        ▼
+ Binance API          Indicators          Order & PnL Engine
 ```
 
 ---
@@ -100,275 +111,131 @@ Example:
 # 📂 Project Structure
 
 ```
-backend/
+AI-Trading-OS
 │
-├── app/
-│   ├── api/
-│   ├── models/
-│   ├── repositories/
-│   ├── services/
-│   │   ├── indicators/
-│   │   ├── strategies/
-│   │   └── backtesting/
-│   ├── config.py
-│   └── main.py
+├── backend
+│   ├── app
+│   │   ├── api
+│   │   ├── models
+│   │   ├── services
+│   │   ├── repositories
+│   │   └── utils
+│   │
+│   └── tests
 │
-├── tests/
-│   ├── integration/
-│   └── unit/
-│
-├── requirements.txt
-├── pytest.ini
-└── README.md
+├── .github
+├── README.md
+├── CHANGELOG.md
+└── LICENSE
 ```
 
 ---
 
-# ⚙️ Installation
+# 🚀 Getting Started
 
-Clone the repository
+## Clone
 
 ```bash
-git clone https://github.com/<your-username>/AI-Trading-OS.git
-
-cd AI-Trading-OS/backend
+git clone https://github.com/YOUR_USERNAME/AI-Trading-OS.git
 ```
 
-Create Virtual Environment
+## Install
 
 ```bash
+cd backend
+
 python -m venv venv
-```
 
-Activate
-
-### macOS/Linux
-
-```bash
 source venv/bin/activate
 ```
 
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-Install Dependencies
+Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-# ▶️ Running the Server
+Run the server
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Open
+Open Swagger
 
 ```
 http://127.0.0.1:8000/docs
 ```
 
-Swagger UI
+---
+
+# 📊 Current Statistics
+
+| Metric | Value |
+|---------|------:|
+| APIs | 20+ |
+| Technical Indicators | 5 |
+| Strategies | 1 |
+| Backtesting Engine | ✅ |
+| Paper Trading | ✅ |
+| Tests | 44 |
+| CI/CD | GitHub Actions |
 
 ---
 
-# 🧪 Running Tests
+# 🛣 Roadmap
 
-```bash
-pytest
-```
+## ✅ Sprint 1–10
 
-Current Status
-
-```
-30 Passed
-```
-
----
-
-# 📡 API Endpoints
-
-## Market
-
-```
-GET /market/price/{symbol}
-GET /market/candles/{symbol}
-```
-
----
-
-## Overview
-
-```
-GET /overview/{symbol}
-```
-
----
-
-## Scanner
-
-```
-GET /scanner/top-gainers
-GET /scanner/top-losers
-```
-
----
-
-## Indicators
-
-```
-GET /indicator/sma/{symbol}
-GET /indicator/ema/{symbol}
-GET /indicator/rsi/{symbol}
-GET /indicator/macd/{symbol}
-GET /indicator/bollinger/{symbol}
-```
-
----
-
-## Strategy
-
-```
-GET /strategy/{symbol}
-```
-
----
-
-## Backtesting
-
-```
-GET /backtest/{symbol}
-```
-
----
-
-# 🧪 Test Coverage
-
-The project includes:
-
-- Unit Tests
-- Integration Tests
-- API Tests
-
-Current Status
-
-```
-30 Passing Tests
-```
-
----
-
-# 🛠 Tech Stack
-
-Backend
-
-- Python 3.11
-- FastAPI
-- Pydantic
-- Uvicorn
-
-Testing
-
-- Pytest
-- FastAPI TestClient
-
-Data
-
-- Binance Market API
-
-Architecture
-
-- Layered Architecture
-- Repository Pattern
-- Service Layer
-
----
-
-# 🚀 Roadmap
-
-## Version 1.0 ✅
-
-- Live Market Data
-- Indicators
+- Project Setup
+- Market Data APIs
+- Technical Indicators
+- Scanner
 - Strategy Engine
-- Backtesting
-- REST APIs
+- Backtesting Engine
+- Paper Trading
+- Auto Trading
+- 44 Automated Tests
 
 ---
 
-## Version 2 🚧
+## 🚧 Sprint 11
 
-- Paper Trading
-- Portfolio Management
-- Order Book
+- SQLite Database
+- SQLAlchemy ORM
+- Portfolio Persistence
 - Trade History
 
 ---
 
-## Version 3 🤖
+## 🔮 Future
 
-- AI Price Prediction
-- LSTM Models
-- Transformer Models
-- Sentiment Analysis
-
----
-
-## Version 4 📊
-
-- Dashboard
+- Multiple Trading Strategies
+- Machine Learning Predictions
 - Authentication
+- PostgreSQL
+- Docker
+- Kubernetes
+- React Dashboard
 - WebSockets
-- Live Charts
+- Real-Time Charts
 
 ---
 
-# 📸 Screenshots
+# 🤝 Contributing
 
-## Swagger UI
+Contributions are welcome.
 
-_Add screenshot here_
-
----
-
-## Backtest API
-
-_Add screenshot here_
+Please open an issue before submitting major changes.
 
 ---
 
-## Strategy API
+# 📜 License
 
-_Add screenshot here_
-
----
-
-# 👨‍💻 Author
-
-**Avikshit Diwakar Kharkar**
-
-Machine Learning Engineer | Data Science | Algorithmic Trading
-
-GitHub:
-https://github.com/<your-github>
-
-LinkedIn:
-https://linkedin.com/in/<your-linkedin>
+MIT License
 
 ---
 
 # ⭐ Support
 
-If you found this project useful, consider giving it a ⭐ on GitHub.
-
----
-
-# 📄 License
-
-This project is licensed under the MIT License.
+If you found this project useful, please consider giving it a ⭐ on GitHub.

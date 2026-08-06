@@ -25,7 +25,7 @@ def sample_candles():
 
 def test_get_candles(mocker):
     mocker.patch(
-        "app.services.market_service.fetch_candles",
+        "app.services.market_service.market_repository.fetch_candles",
         return_value=sample_candles(),
     )
 

@@ -3,17 +3,14 @@ from datetime import UTC, datetime
 from app.core.constants import DEFAULT_SYMBOLS
 from app.models.candle import Candle
 from app.models.market import MarketTicker
-from app.repositories.market_repository import (
-    fetch_candles,
-    fetch_price,
-)
+from app.repositories import market_repository
 
 
 def get_price(symbol: str) -> MarketTicker | None:
     """
     Fetch and transform market data for a trading symbol.
     """
-    data = fetch_price(symbol)
+    data = market_repository.fetch_price(symbol)
 
     if data is None:
         return None
@@ -55,7 +52,7 @@ def get_candles(
     Fetch and transform historical candle data.
     """
 
-    data = fetch_candles(
+    data = market_repository.fetch_candles(
         symbol=symbol,
         interval=interval,
         limit=limit,
